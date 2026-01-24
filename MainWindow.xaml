@@ -88,7 +88,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Nur Sonnet" Foreground="White" FontSize="12"/>
+                    <TextBlock Grid.Column="0" Text="Sonnet only" Foreground="White" FontSize="12"/>
                     <TextBlock Grid.Column="1" x:Name="SonnetPercent" Text="0%" Foreground="White" FontSize="12" FontWeight="Bold"/>
                 </Grid>
                 <ProgressBar x:Name="SonnetProgressBar" 
@@ -107,7 +107,7 @@
 
             <!-- Status Text -->
             <TextBlock x:Name="StatusText" 
-                       Text="Zuletzt aktualisiert: Lade Daten..." 
+                       Text="Last updated: loading..." 
                        Foreground="#80FFFFFF" 
                        FontSize="10" 
                        HorizontalAlignment="Center"

@@ -49,7 +49,7 @@ namespace ClaudeStatusMonitor
                 WebView.CoreWebView2.WebMessageReceived += WebView_WebMessageReceived;
                 WebView.CoreWebView2.Navigate("https://claude.ai/");
                 
-                System.Diagnostics.Debug.WriteLine($"[LoginWindow] WebView2 bereit, silentMode: {_isSilentMode}");
+                System.Diagnostics.Debug.WriteLine($"[LoginWindow] WebView2 ready, silentMode: {_isSilentMode}");
                 
                 // Nur EINMALIGER Login-Check (KEIN Timer mehr!)
                 await CheckLoginStatus();
@@ -65,15 +65,15 @@ namespace ClaudeStatusMonitor
                     await Task.Delay(SILENT_LOGIN_TIMEOUT);
                     if (!_isLoginSuccessful)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[LoginWindow] Silent Login Timeout, schliesse Fenster");
+                        System.Diagnostics.Debug.WriteLine($"[LoginWindow] Silent login timeout, closing window");
                         this.Close();
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Initialisieren von WebView2: {ex.Message}", 
-                    "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Failed to initialize WebView2: {ex.Message}", 
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
             }
         }
@@ -104,7 +104,7 @@ namespace ClaudeStatusMonitor
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[LoginWindow] Starte Login-Check...");
+                System.Diagnostics.Debug.WriteLine($"[LoginWindow] Starting login check...");
                 _isCheckingLogin = true;
 
                 var tcs = new TaskCompletionSource<LoginCheckResult>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -145,7 +145,7 @@ namespace ClaudeStatusMonitor
                 var result = await tcs.Task;
                 if (result != null && result.success)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[LoginWindow] Login erfolgreich! OrgId: {result.organizationId}");
+                    System.Diagnostics.Debug.WriteLine($"[LoginWindow] Login successful! OrgId: {result.organizationId}");
                     _isLoginSuccessful = true;
                     StopLoginCheckTimer();
 
@@ -158,18 +158,18 @@ namespace ClaudeStatusMonitor
 
                     if (_isSilentMode)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[LoginWindow] Silent-Mode: Schliesse Fenster");
+                        System.Diagnostics.Debug.WriteLine($"[LoginWindow] Silent mode: closing window");
                         this.Close();
                     }
                 }
                 else if (result != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[LoginWindow] Login-Check fehlgeschlagen: {result.error}");
+                    System.Diagnostics.Debug.WriteLine($"[LoginWindow] Login check failed: {result.error}");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[LoginWindow] Fehler in CheckLoginStatus: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"[LoginWindow] Error in CheckLoginStatus: {ex.Message}");
             }
             finally
             {
@@ -238,7 +238,7 @@ namespace ClaudeStatusMonitor
         private void Window_Closed(object? sender, EventArgs e)
         {
             StopLoginCheckTimer();
-            System.Diagnostics.Debug.WriteLine($"[LoginWindow] Fenster geschlossen");
+            System.Diagnostics.Debug.WriteLine($"[LoginWindow] Window closed");
         }
 
         private class LoginCheckResult

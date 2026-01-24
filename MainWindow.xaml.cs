@@ -33,14 +33,14 @@ namespace ClaudeStatusMonitor
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            StatusText.Text = "Initialisiere...";
+            StatusText.Text = "Initializing...";
             try
             {
                 await _webViewClient.InitializeAsync();
             }
             catch (Exception ex)
             {
-                StatusText.Text = $"Initialisierung fehlgeschlagen: {ex.Message}";
+                StatusText.Text = $"Initialization failed: {ex.Message}";
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace ClaudeStatusMonitor
             }
 
             _isUpdating = true;
-            StatusText.Text = "Aktualisiere Daten...";
+            StatusText.Text = "Updating data...";
 
             UsageFetchResult result;
             try
@@ -79,11 +79,11 @@ namespace ClaudeStatusMonitor
             }
             else if (result.RequiresLogin)
             {
-                StatusText.Text = "Anmeldung erforderlich - bitte neu anmelden";
+                StatusText.Text = "Login required - please sign in again";
             }
             else
             {
-                StatusText.Text = "Aktualisierung fehlgeschlagen - keine Daten empfangen";
+                StatusText.Text = "Update failed - no data received";
             }
 
             ResetRefreshTimer();
@@ -125,7 +125,7 @@ namespace ClaudeStatusMonitor
 
         private void OnLoginSuccess(object? sender, LoginSuccessEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("[MainWindow] OnLoginSuccess aufgerufen!");
+            System.Diagnostics.Debug.WriteLine("[MainWindow] OnLoginSuccess called!");
             System.Diagnostics.Debug.WriteLine($"[MainWindow] OrganizationId: {e.OrganizationId}");
 
             _webViewClient.SetOrganizationId(e.OrganizationId);
@@ -138,11 +138,11 @@ namespace ClaudeStatusMonitor
 
         private void DisplayUsageData(Models.UsageResponse usage)
         {
-            System.Diagnostics.Debug.WriteLine($"[MainWindow] DisplayUsageData aufgerufen");
+            System.Diagnostics.Debug.WriteLine($"[MainWindow] DisplayUsageData called");
             
             if (usage != null)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainWindow] Zeige Usage-Daten an...");
+                System.Diagnostics.Debug.WriteLine($"[MainWindow] Rendering usage data...");
                 
                     // Session (5h)
                     if (usage.FiveHour != null)
@@ -152,7 +152,7 @@ namespace ClaudeStatusMonitor
                         
                         if (usage.FiveHour.ResetsAt == null)
                         {
-                            SessionResetTime.Text = "Zuruecksetzung: --:--";
+                            SessionResetTime.Text = "Reset: --:--";
                         }
                         else
                         {
@@ -163,11 +163,11 @@ namespace ClaudeStatusMonitor
                             {
                                 var hours = minutesUntilReset / 60;
                                 var minutes = minutesUntilReset % 60;
-                                SessionResetTime.Text = $"Zuruecksetzung in {hours} Std. {minutes} Min.";
+                                SessionResetTime.Text = $"Reset in {hours} h {minutes} min";
                             }
                             else
                             {
-                                SessionResetTime.Text = $"Zuruecksetzung in {minutesUntilReset} Min.";
+                                SessionResetTime.Text = $"Reset in {minutesUntilReset} min";
                             }
                         }
                     }
@@ -180,13 +180,13 @@ namespace ClaudeStatusMonitor
                         
                         if (usage.SevenDay.ResetsAt == null)
                         {
-                            WeeklyResetTime.Text = "Zuruecksetzung: --:--";
+                            WeeklyResetTime.Text = "Reset: --:--";
                         }
                         else
                         {
                             var resetTimeLocal = usage.SevenDay.ResetsAt.Value.ToLocalTime();
-                            var dayName = resetTimeLocal.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("de-DE"));
-                            WeeklyResetTime.Text = $"Zuruecksetzung {dayName}., {resetTimeLocal:HH:mm}";
+                            var dayName = resetTimeLocal.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                            WeeklyResetTime.Text = $"Reset {dayName}, {resetTimeLocal:HH:mm}";
                         }
                     }
 
@@ -198,20 +198,20 @@ namespace ClaudeStatusMonitor
                         
                         if (usage.SevenDaySonnet.ResetsAt == null)
                         {
-                            SonnetResetTime.Text = "Zuruecksetzung: --:--";
+                            SonnetResetTime.Text = "Reset: --:--";
                         }
                         else
                         {
                             var resetTimeLocal = usage.SevenDaySonnet.ResetsAt.Value.ToLocalTime();
-                            var dayName = resetTimeLocal.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("de-DE"));
-                            SonnetResetTime.Text = $"Zuruecksetzung {dayName}., {resetTimeLocal:HH:mm}";
+                            var dayName = resetTimeLocal.ToString("ddd", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                            SonnetResetTime.Text = $"Reset {dayName}, {resetTimeLocal:HH:mm}";
                         }
                     }
 
                 _lastUpdateTime = DateTime.Now;
                 UpdateStatusText();
                 
-                System.Diagnostics.Debug.WriteLine($"[MainWindow] Usage-Daten erfolgreich angezeigt!");
+                System.Diagnostics.Debug.WriteLine($"[MainWindow] Usage data rendered.");
             }
         }
 
@@ -220,15 +220,15 @@ namespace ClaudeStatusMonitor
             var minutesSinceUpdate = (int)(DateTime.Now - _lastUpdateTime).TotalMinutes;
             if (minutesSinceUpdate < 1)
             {
-                StatusText.Text = "Zuletzt aktualisiert: vor weniger als einer Minute";
+                StatusText.Text = "Last updated: less than a minute ago";
             }
             else if (minutesSinceUpdate == 1)
             {
-                StatusText.Text = "Zuletzt aktualisiert: vor 1 Minute";
+                StatusText.Text = "Last updated: 1 minute ago";
             }
             else
             {
-                StatusText.Text = $"Zuletzt aktualisiert: vor {minutesSinceUpdate} Minuten";
+                StatusText.Text = $"Last updated: {minutesSinceUpdate} minutes ago";
             }
         }
 
@@ -256,25 +256,25 @@ namespace ClaudeStatusMonitor
         {
             var contextMenu = new System.Windows.Controls.ContextMenu();
 
-            // Position sperren/entsperren
+            // Lock position
             var lockMenuItem = new System.Windows.Controls.MenuItem
             {
-                Header = _isPositionLocked ? "Position entsperren" : "Position sperren"
+                Header = _isPositionLocked ? "Unlock position" : "Lock position"
             };
             lockMenuItem.Click += (s, args) =>
             {
                 _isPositionLocked = !_isPositionLocked;
-                StatusText.Text = _isPositionLocked ? "Position gesperrt" : "Position entsperrt";
+                StatusText.Text = _isPositionLocked ? "Position locked" : "Position unlocked";
             };
             contextMenu.Items.Add(lockMenuItem);
 
-            // Aktualisieren
-            var refreshMenuItem = new System.Windows.Controls.MenuItem { Header = "Jetzt aktualisieren" };
+            // Refresh
+            var refreshMenuItem = new System.Windows.Controls.MenuItem { Header = "Refresh now" };
             refreshMenuItem.Click += async (s, args) => await UpdateUsageDataAsync();
             contextMenu.Items.Add(refreshMenuItem);
 
-            // Neu anmelden
-            var loginMenuItem = new System.Windows.Controls.MenuItem { Header = "Neu anmelden" };
+            // Re-login
+            var loginMenuItem = new System.Windows.Controls.MenuItem { Header = "Re-login" };
             loginMenuItem.Click += async (s, args) =>
             {
                 await _webViewClient.ClearSessionAsync();
@@ -285,8 +285,8 @@ namespace ClaudeStatusMonitor
             // Separator
             contextMenu.Items.Add(new System.Windows.Controls.Separator());
 
-            // Beenden
-            var exitMenuItem = new System.Windows.Controls.MenuItem { Header = "Beenden" };
+            // Exit
+            var exitMenuItem = new System.Windows.Controls.MenuItem { Header = "Exit" };
             exitMenuItem.Click += (s, args) => Application.Current.Shutdown();
             contextMenu.Items.Add(exitMenuItem);
 

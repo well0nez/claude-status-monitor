@@ -20,7 +20,7 @@
                            Foreground="White" 
                            FontSize="16" 
                            HorizontalAlignment="Center"/>
-                <TextBlock Text="Bitte melde dich an" 
+                <TextBlock Text="Please sign in" 
                            Foreground="White" 
                            FontSize="12" 
                            Margin="0,5,0,0"
