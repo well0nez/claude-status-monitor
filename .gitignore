@@ -1,0 +1,29 @@
+# Build output
+bin/
+obj/
+publish/
+dist-single/
+
+# Visual Studio / IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Artifacts
+*.pdb
+*.nupkg
+*.snupkg
+*.db
+*.tmp
+*.bak
+*.exe
+
+# OS
+Thumbs.db
+Desktop.ini
