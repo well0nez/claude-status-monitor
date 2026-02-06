@@ -4,7 +4,7 @@
         xmlns:converters="clr-namespace:ClaudeStatusMonitor.Converters"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="Claude Status Monitor"
-        Height="260" Width="400"
+        Height="155" Width="240"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -15,6 +15,34 @@
 
     <Window.Resources>
         <converters:UtilizationToColorConverter x:Key="UtilizationToColorConverter"/>
+
+        <!-- Modern slim ProgressBar style with rounded corners -->
+        <Style x:Key="SlimProgressBar" TargetType="ProgressBar">
+            <Setter Property="Height" Value="6"/>
+            <Setter Property="Background" Value="#30FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid>
+                            <!-- Track (background) -->
+                            <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="3"/>
+                            <!-- Fill (indicator) -->
+                            <Border x:Name="PART_Track">
+                                <Border x:Name="PART_Indicator"
+                                        HorizontalAlignment="Left"
+                                        CornerRadius="3">
+                                    <Border.Background>
+                                        <Binding Path="Foreground" RelativeSource="{RelativeSource TemplatedParent}"/>
+                                    </Border.Background>
+                                </Border>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -24,94 +52,88 @@
                       Visibility="Hidden"
                       IsHitTestVisible="False" />
 
-        <Border Background="#E0000000" CornerRadius="10" Padding="15">
+        <Border Background="#E0000000" CornerRadius="8" Padding="10,8">
             <StackPanel>
-            <!-- Header -->
-            <TextBlock Text="Claude Status Monitor" 
-                       FontSize="14" 
-                       FontWeight="Bold" 
-                       Foreground="White" 
-                       Margin="0,0,0,10"/>
 
             <!-- Session Limit (5h) -->
-            <StackPanel Margin="0,0,0,10">
+            <StackPanel Margin="0,0,0,6">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Current session" Foreground="White" FontSize="12"/>
-                    <TextBlock Grid.Column="1" x:Name="SessionPercent" Text="0%" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="0" Text="Current session" Foreground="White" FontSize="9"/>
+                    <TextBlock Grid.Column="1" x:Name="SessionPercent" Text="0%" Foreground="White" FontSize="9" FontWeight="Bold"/>
                 </Grid>
                 <ProgressBar x:Name="SessionProgressBar" 
-                             Height="18" 
+                             Style="{StaticResource SlimProgressBar}"
                              Minimum="0" 
                              Maximum="100" 
                              Value="0"
                              Foreground="{Binding Value, ElementName=SessionProgressBar, Converter={StaticResource UtilizationToColorConverter}}"
-                             Margin="0,3,0,0"/>
+                             Margin="0,2,0,0"/>
                 <TextBlock x:Name="SessionResetTime" 
-                           Text="Zurücksetzung in --:--" 
+                           Text="Reset: --:--" 
                            Foreground="#B0FFFFFF" 
-                           FontSize="10" 
-                           Margin="0,2,0,0"/>
+                           FontSize="8" 
+                           Margin="0,1,0,0"/>
             </StackPanel>
 
             <!-- Weekly Limit (7d) -->
-            <StackPanel Margin="0,0,0,10">
+            <StackPanel Margin="0,0,0,6">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="All models" Foreground="White" FontSize="12"/>
-                    <TextBlock Grid.Column="1" x:Name="WeeklyPercent" Text="0%" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="0" Text="All models" Foreground="White" FontSize="9"/>
+                    <TextBlock Grid.Column="1" x:Name="WeeklyPercent" Text="0%" Foreground="White" FontSize="9" FontWeight="Bold"/>
                 </Grid>
                 <ProgressBar x:Name="WeeklyProgressBar" 
-                             Height="18" 
+                             Style="{StaticResource SlimProgressBar}"
                              Minimum="0" 
                              Maximum="100" 
                              Value="0"
                              Foreground="{Binding Value, ElementName=WeeklyProgressBar, Converter={StaticResource UtilizationToColorConverter}}"
-                             Margin="0,3,0,0"/>
+                             Margin="0,2,0,0"/>
                 <TextBlock x:Name="WeeklyResetTime" 
-                           Text="Zurücksetzung --.--.----, --:--" 
+                           Text="Reset: --:--" 
                            Foreground="#B0FFFFFF" 
-                           FontSize="10" 
-                           Margin="0,2,0,0"/>
+                           FontSize="8" 
+                           Margin="0,1,0,0"/>
             </StackPanel>
 
             <!-- Sonnet Limit (7d) -->
-            <StackPanel Margin="0,0,0,5">
+            <StackPanel Margin="0,0,0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Sonnet only" Foreground="White" FontSize="12"/>
-                    <TextBlock Grid.Column="1" x:Name="SonnetPercent" Text="0%" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                    <TextBlock Grid.Column="0" Text="Sonnet only" Foreground="White" FontSize="9"/>
+                    <TextBlock Grid.Column="1" x:Name="SonnetPercent" Text="0%" Foreground="White" FontSize="9" FontWeight="Bold"/>
                 </Grid>
                 <ProgressBar x:Name="SonnetProgressBar" 
-                             Height="18" 
+                             Style="{StaticResource SlimProgressBar}"
                              Minimum="0" 
                              Maximum="100" 
                              Value="0"
                              Foreground="{Binding Value, ElementName=SonnetProgressBar, Converter={StaticResource UtilizationToColorConverter}}"
-                             Margin="0,3,0,0"/>
+                             Margin="0,2,0,0"/>
                 <TextBlock x:Name="SonnetResetTime" 
-                           Text="Zurücksetzung --.--.----, --:--" 
+                           Text="Reset: --:--" 
                            Foreground="#B0FFFFFF" 
-                           FontSize="10" 
-                           Margin="0,2,0,0"/>
+                           FontSize="8" 
+                           Margin="0,1,0,0"/>
             </StackPanel>
 
             <!-- Status Text -->
             <TextBlock x:Name="StatusText" 
                        Text="Last updated: loading..." 
                        Foreground="#80FFFFFF" 
-                       FontSize="10" 
+                       FontSize="8" 
                        HorizontalAlignment="Center"
-                       Margin="0,8,0,0"/>
+                       Margin="0,3,0,0"/>
             </StackPanel>
         </Border>
     </Grid>
